@@ -3,4 +3,13 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="worldSection">#795548</color>
+    <color name="politicsSection">#ef6c00</color>
+    <color name="scienceSection">#283593</color>
+    <color name="societySection">#00796b</color>
+    <color name="newsSection">#f44336</color>
+    <color name="musicSection">#ad1457</color>
+    <color name="australiaSection">#5e35b1</color>
+    <color name="businessSection">#212121</color>
 </resources>
