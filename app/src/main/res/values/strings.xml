@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">NewsApp1</string>
     <string name="no_connection">No internet connection.</string>
+    <string name="message_no_stories_available">No stories available.</string>
+    <string name="search_view_query_hint">What interests you today?</string>
 </resources>

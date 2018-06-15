@@ -27,8 +27,14 @@ public class NewsLoader extends AsyncTaskLoader<List<Result>> {
             return null;
         }
 
-        List<Result> results = QueryUtils.fetchResultData(mUrl);
+        List<Result> results = QueryUtils.fetchResultData(mUrl, new INetworkListener() {
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
         return results;
+
 
     }
 
@@ -36,6 +42,7 @@ public class NewsLoader extends AsyncTaskLoader<List<Result>> {
     protected void onStartLoading() {
         forceLoad();
     }
+
 
 
 }

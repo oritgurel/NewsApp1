@@ -28,6 +28,7 @@ public class QueryUtils {
     /** Tag for the log messages */
     public static final String LOG_TAG = QueryUtils.class.getName();
 
+
     private QueryUtils() {
 
     }
@@ -36,37 +37,39 @@ public class QueryUtils {
      * Query the Guardian dataset and return a list of result objects.
      */
 
-    public static List<Result> fetchResultData(String requestUrl) {
+    public static List<Result> fetchResultData(String requestUrl, final INetworkListener listener) {
 
         // Create URL object
-        URL url = createUrl(requestUrl);
+        URL url = createUrl(requestUrl, listener);
 
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
 
         try {
-            jsonResponse = makeHttpRequest(url);
+            jsonResponse = makeHttpRequest(url, listener);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the Http request.", e);
+            listener.onError("Problem making the Http request.");
         }
 
         // Extract relevant fields from the JSON response and create a list of Results
-        List<Result> results = extractFeatureFromJson(jsonResponse);
+        List<Result> results = extractFeatureFromJson(jsonResponse, listener);
 
         return results;
     }
 
-    private static URL createUrl(String stringUrl) {
+    private static URL createUrl(String stringUrl, final INetworkListener listener) {
         URL url = null;
         try {
             url = new URL(stringUrl);
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Problem with building the URL", e);
+            listener.onError("Problem with building the URL");
         }
         return url;
     }
 
-    private static String makeHttpRequest(URL url) throws IOException {
+    private static String makeHttpRequest(URL url, final INetworkListener listener) throws IOException {
         String jsonResponse = "";
 
         if (url == null) {
@@ -88,9 +91,11 @@ public class QueryUtils {
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+                listener.onError("Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving news json data results", e);
+            listener.onError("Problem retrieving news json data results");
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -126,7 +131,7 @@ public class QueryUtils {
      * parsing the given JSON response.
      */
 
-    private static List<Result> extractFeatureFromJson(String resultJson) {
+    private static List<Result> extractFeatureFromJson(String resultJson, final INetworkListener listener) {
         if (TextUtils.isEmpty(resultJson)) {
             return null;
         }
@@ -168,6 +173,7 @@ public class QueryUtils {
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing JSON results");
+            listener.onError("Problem parsing JSON results");
         }
         return results;
     }
