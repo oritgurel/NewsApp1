@@ -42,7 +42,7 @@
             tools:text="ssdfghjk sdfghjksdfg sdfghjks sdfghjksdfg hjksdfg hjksdfg hjksdfg hjksdfg h"/>
 
         <TextView
-            android:id="@+id/list_item_type"
+            android:id="@+id/list_item_author"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_below="@+id/list_item_title"
@@ -51,6 +51,17 @@
             android:layout_alignParentBottom="true"
             android:gravity="center"
             tools:text="article"/>
+
+            <TextView
+                android:id="@+id/list_item_date"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/list_item_title"
+                android:textSize="14sp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                tools:text="article"/>
 
         </RelativeLayout>
 

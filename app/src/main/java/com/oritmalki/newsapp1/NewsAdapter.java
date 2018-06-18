@@ -2,7 +2,9 @@ package com.oritmalki.newsapp1;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build.VERSION_CODES;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -35,21 +37,40 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     @Override
     public NewsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_results, parent, false);
-        return new NewsHolder(view);
+        final NewsHolder holder = new NewsHolder(view);
+        holder.author.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!holder.author.getText().equals(v.getContext().getString(R.string.guardian))) {
+                    v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(results.get(holder.getAdapterPosition()).getTags().get(0).getWebUrl())));
+                }
+            }
+        });
+        holder.itemView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(results.get(holder.getAdapterPosition()).getWebUrl())));
+            }
+        });
+
+
+        return holder;
     }
 
+    @RequiresApi(api = VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull final NewsHolder holder, final int position) {
         holder.sectionName.setText(results.get(position).getSectionName());
         setSectionTextColor(holder.sectionName, results.get(position).getSectionId());
         holder.webTitle.setText(results.get(position).getWebTitle());
-        holder.type.setText(results.get(position).getType());
-        holder.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(results.get(position).getWebUrl())));
-            }
-        });
+        if (results.get(position).getTags() != null) {
+            holder.author.setText(results.get(position).getTags().get(0).getWebTitle());
+        } else {
+            holder.author.setText(R.string.guardian);
+        }
+
+        holder.date.setText(QueryUtils.formatDate(results.get(position).getWebPublicationDate()));
+
     }
 
 
@@ -61,13 +82,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     public class NewsHolder extends ViewHolder {
         TextView webTitle;
-        TextView type;
+        TextView author;
         TextView sectionName;
+        TextView date;
 
         public NewsHolder(View itemView) {
             super(itemView);
+            date = itemView.findViewById(R.id.list_item_date);
             webTitle = itemView.findViewById(R.id.list_item_title);
-            type = itemView.findViewById(R.id.list_item_type);
+            author = itemView.findViewById(R.id.list_item_author);
             sectionName = itemView.findViewById(R.id.list_item_section_name);
 
 
@@ -106,5 +129,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     public void setColor(TextView view, int color) {
         view.setTextColor(view.getContext().getResources().getColor(color));
     }
+
+
+
 
 }

@@ -1,7 +1,13 @@
 package com.oritmalki.newsapp1.networkapi;
 
 
-public class Result {
+import android.support.annotation.NonNull;
+
+import com.oritmalki.newsapp1.QueryUtils;
+
+import java.util.List;
+
+public class Result implements Comparable<Result> {
 
 
     private String id;
@@ -26,7 +32,9 @@ public class Result {
 
     private String pillarName;
 
-    public Result(String id, String type, String sectionId, String sectionName, String webPublicationDate, String webTitle, String webUrl, String apiUrl, Boolean isHosted, String pillarId, String pillarName) {
+    private List<Tag> tags = null;
+
+    public Result(String id, String type, String sectionId, String sectionName, String webPublicationDate, String webTitle, String webUrl, String apiUrl, Boolean isHosted, String pillarId, String pillarName, List<Tag> tags) {
         this.id = id;
         this.type = type;
         this.sectionId = sectionId;
@@ -38,10 +46,19 @@ public class Result {
         this.isHosted = isHosted;
         this.pillarId = pillarId;
         this.pillarName = pillarName;
+        this.tags = tags;
     }
 
     public Result() {
 
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     public String getId() {
@@ -132,4 +149,8 @@ public class Result {
         this.pillarName = pillarName;
     }
 
+    @Override
+    public int compareTo(@NonNull Result o) {
+        return QueryUtils.convertDate(getWebPublicationDate()).compareTo(QueryUtils.convertDate(o.getWebPublicationDate()));
+    }
 }

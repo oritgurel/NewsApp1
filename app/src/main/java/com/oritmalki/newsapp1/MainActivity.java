@@ -16,25 +16,25 @@ import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.oritmalki.newsapp1.networkapi.Result;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements LoaderCallbacks<List<Result>>, TextWatcher, INetworkListener {
 
     private TextView messageTV;
-    private static TextView queryTV;
-    private ImageButton searchButt;
     private static final int NEWS_LOADER_ID = 1;
     private RecyclerView newsRecyclerview;
     private NewsAdapter adapter;
     private static String queryEndpoint;
     private ProgressBar progressBar;
     private android.support.v7.widget.SearchView searchView;
+
+    //TODO handle error messages, add writer name.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +48,13 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
         messageTV = findViewById(R.id.message);
-//        queryTV = findViewById(R.id.main_search_text);
-//        queryTV.addTextChangedListener(this);
-//        searchButt = findViewById(R.id.main_search_button);
         newsRecyclerview = findViewById(R.id.news_recyclerview);
         newsRecyclerview.setVisibility(View.GONE);
         LinearLayoutManager lm = new LinearLayoutManager(this);
         newsRecyclerview.setLayoutManager(lm);
         final Bundle bundle = new Bundle();
-        queryEndpoint = "http://content.guardianapis.com/search?q=" + searchView.getQuery().toString() + "&api-key=" + ApiKey.getApiKey();
-//        initLoader();
+        queryEndpoint = "http://content.guardianapis.com/search?q=" + searchView.getQuery().toString() + "&api-key=" + ApiKey.getApiKey() + "&show-tags=contributor";
+
 
 
         searchView.setOnQueryTextListener(new OnQueryTextListener() {
@@ -69,14 +66,12 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                queryEndpoint = "http://content.guardianapis.com/search?q=" + newText + "&api-key=" + ApiKey.getApiKey();
+                queryEndpoint = "http://content.guardianapis.com/search?q=" + newText + "&api-key=" + ApiKey.getApiKey() + "&show-tags=contributor";
                 return true;
             }
         });
     }
 
-
-    //TODO instead of implementing onCreateLoader, replace with new task - newsLoader with queryTV.getText()...
 
     @NonNull
     @Override
@@ -92,12 +87,17 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
         messageTV.setText(R.string.message_no_stories_available);
 
-        if (data != null && !data.isEmpty())
+        if (data != null && !data.isEmpty()) {
+            //sort by date:
+            Collections.sort(data);
+            Collections.reverse(data);
             adapter = new NewsAdapter(data);
             newsRecyclerview.setAdapter(adapter);
 //            messageTV.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
             newsRecyclerview.setVisibility(View.VISIBLE);
+        }
+
 
     }
 
@@ -152,7 +152,12 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @Override
     public void onError(String errorMessage) {
-//        messageTV.setVisibility(View.VISIBLE);
+        messageTV.setVisibility(View.VISIBLE);
         messageTV.setText(errorMessage);
+    }
+
+    @Override
+    public void onSuccess(List<Result> results) {
+
     }
 }

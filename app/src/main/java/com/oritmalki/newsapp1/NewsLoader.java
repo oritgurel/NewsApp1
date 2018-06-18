@@ -30,7 +30,14 @@ public class NewsLoader extends AsyncTaskLoader<List<Result>> {
         List<Result> results = QueryUtils.fetchResultData(mUrl, new INetworkListener() {
             @Override
             public void onError(String errorMessage) {
+                AsyncTaskResults<Exception> asyncTaskResult = new AsyncTaskResults();
+                asyncTaskResult.setError(new Exception(Exceptions.JSON_PARSE_EXCEPTION));
+                return;
+            }
 
+            @Override
+            public void onSuccess(List<Result> results) {
+//                AsyncTaskResults
             }
         });
         return results;

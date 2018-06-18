@@ -4,7 +4,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.oritmalki.newsapp1.networkapi.Result;
+import com.oritmalki.newsapp1.networkapi.Tag;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +30,7 @@ public class QueryUtils {
 
     /** Tag for the log messages */
     public static final String LOG_TAG = QueryUtils.class.getName();
+    private static List<Tag> tagsList;
 
 
     private QueryUtils() {
@@ -152,7 +156,10 @@ public class QueryUtils {
             //extract json object Result from the baseResponse object
             JSONArray resultArray = response.getJSONArray("results");
 
+
+
             for (int i=0; i<resultArray.length(); i++) {
+                Result result = new Result();
                 JSONObject currentResult = resultArray.getJSONObject(i);
                 String id = currentResult.getString("id");
                 String type = currentResult.getString("type");
@@ -165,8 +172,36 @@ public class QueryUtils {
                 boolean isHosted = currentResult.getBoolean("isHosted");
                 String pillarId = currentResult.getString("pillarId");
                 String pillarName = currentResult.getString("pillarName");
+                JSONArray tags = currentResult.getJSONArray("tags");
+                if (tags != null && tags.length() != 0) {
+                for (int j=0; j<tags.length();j++) {
+                    JSONObject currentTag = tags.getJSONObject(j);
+                    String authorId = currentTag.getString("id");
+                    String authorType = currentTag.getString("type");
+                    String authorWebTitle = currentTag.getString("webTitle");
+                    String authorUrl = currentTag.getString("webUrl");
+                    String authorApiUrl = currentTag.getString("apiUrl");
+                    String bio = currentTag.getString("bio");
 
-                Result result = new Result(id, type, sectionId, sectionName, webPublicationDate, webTitle, webUrl, apiUrl, isHosted, pillarId, pillarName);
+                    tagsList = new ArrayList<>();
+                    tagsList.add(new Tag(authorId, authorType, authorWebTitle, authorUrl, authorApiUrl, bio));
+
+
+                    }
+                    result.setTags(tagsList);
+                }
+                result.setId(id);
+                result.setType(type);
+                result.setSectionId(sectionId);
+                result.setSectionName(sectionName);
+                result.setWebPublicationDate(webPublicationDate);
+                result.setWebTitle(webTitle);
+                result.setWebUrl(webUrl);
+                result.setApiUrl(apiUrl);
+                result.setIsHosted(isHosted);
+                result.setPillarId(pillarId);
+                result.setPillarName(pillarName);
+
                 results.add(result);
 
             }
@@ -174,7 +209,23 @@ public class QueryUtils {
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing JSON results");
             listener.onError("Problem parsing JSON results");
+
         }
+        listener.onSuccess(results);
         return results;
+    }
+
+    public static String formatDate(String date) {
+        org.joda.time.format.DateTimeFormatter inputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DateTime time = inputFormatter.parseDateTime(date);
+        org.joda.time.format.DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("dd-MM-yy");
+        return outputFormatter.print(time);
+
+    }
+
+    public static DateTime convertDate(String date) {
+        org.joda.time.format.DateTimeFormatter inputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DateTime time = inputFormatter.parseDateTime(date);
+        return time;
     }
 }
