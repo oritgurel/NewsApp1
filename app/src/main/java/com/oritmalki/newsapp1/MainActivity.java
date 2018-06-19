@@ -24,7 +24,7 @@ import com.oritmalki.newsapp1.networkapi.Result;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderCallbacks<List<Result>>, TextWatcher, INetworkListener {
+public class MainActivity extends AppCompatActivity implements LoaderCallbacks<AsyncTaskResults>, TextWatcher {
 
     private TextView messageTV;
     private static final int NEWS_LOADER_ID = 1;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
     private ProgressBar progressBar;
     private android.support.v7.widget.SearchView searchView;
 
-    //TODO handle error messages, add writer name.
+    //TODO handle error messages
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @NonNull
     @Override
-    public Loader<List<Result>> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<AsyncTaskResults> onCreateLoader(int id, @Nullable Bundle args) {
         messageTV.setVisibility(View.GONE);
         newsRecyclerview.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -83,26 +83,39 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<List<Result>> loader, List<Result> data) {
+    public void onLoadFinished(@NonNull Loader<AsyncTaskResults> loader, AsyncTaskResults data) {
 
-        messageTV.setText(R.string.message_no_stories_available);
-
-        if (data != null && !data.isEmpty()) {
-            //sort by date:
-            Collections.sort(data);
-            Collections.reverse(data);
-            adapter = new NewsAdapter(data);
-            newsRecyclerview.setAdapter(adapter);
-//            messageTV.setVisibility(View.GONE);
+        if (data.getError() instanceof Exception) {
             progressBar.setVisibility(View.GONE);
-            newsRecyclerview.setVisibility(View.VISIBLE);
+            messageTV.setText(data.getError().getLocalizedMessage());
+
+        } else if (data.getResult() != null) {
+            List<Result> results = (List<Result>) data.getResult();
+
+            messageTV.setText(R.string.message_no_stories_available);
+
+            if (results != null && !results.isEmpty()) {
+
+
+                //sort by date:
+                Collections.sort(results);
+                Collections.reverse(results);
+                adapter = new NewsAdapter(results);
+                newsRecyclerview.setAdapter(adapter);
+//            messageTV.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                newsRecyclerview.setVisibility(View.VISIBLE);
+            }
+        } else {
+            progressBar.setVisibility(View.GONE);
+            messageTV.setText(R.string.message_no_stories_available);
         }
 
 
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<List<Result>> loader) {
+    public void onLoaderReset(@NonNull Loader<AsyncTaskResults> loader) {
         adapter.clearData();
         adapter.setNews(null);
     }
@@ -148,16 +161,4 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     }
 
-
-
-    @Override
-    public void onError(String errorMessage) {
-        messageTV.setVisibility(View.VISIBLE);
-        messageTV.setText(errorMessage);
-    }
-
-    @Override
-    public void onSuccess(List<Result> results) {
-
-    }
 }

@@ -41,39 +41,42 @@ public class QueryUtils {
      * Query the Guardian dataset and return a list of result objects.
      */
 
-    public static List<Result> fetchResultData(String requestUrl, final INetworkListener listener) {
+    public static AsyncTaskResults fetchResultData(String requestUrl) {
 
         // Create URL object
-        URL url = createUrl(requestUrl, listener);
+        URL url = createUrl(requestUrl);
 
         // Perform HTTP request to the URL and receive a JSON response back
         String jsonResponse = null;
 
         try {
-            jsonResponse = makeHttpRequest(url, listener);
+            jsonResponse = makeHttpRequest(url);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the Http request.", e);
-            listener.onError("Problem making the Http request.");
+//            listener.onError("Problem making the Http request.");
+              AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
+              taskException.setError(e);
+              return taskException;
         }
 
         // Extract relevant fields from the JSON response and create a list of Results
-        List<Result> results = extractFeatureFromJson(jsonResponse, listener);
+        AsyncTaskResults<List<Result>> results = extractFeatureFromJson(jsonResponse);
 
         return results;
     }
 
-    private static URL createUrl(String stringUrl, final INetworkListener listener) {
+    private static URL createUrl(String stringUrl) {
         URL url = null;
         try {
             url = new URL(stringUrl);
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Problem with building the URL", e);
-            listener.onError("Problem with building the URL");
+//            listener.onError("Problem with building the URL");
         }
         return url;
     }
 
-    private static String makeHttpRequest(URL url, final INetworkListener listener) throws IOException {
+    private static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
 
         if (url == null) {
@@ -95,11 +98,18 @@ public class QueryUtils {
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
-                listener.onError("Error response code: " + urlConnection.getResponseCode());
+//                listener.onError("Error response code: " + urlConnection.getResponseCode());
+                AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
+                taskException.setError(new MalformedURLException());
+                return taskException.getError().getMessage();
+
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving news json data results", e);
-            listener.onError("Problem retrieving news json data results");
+//            listener.onError("Problem retrieving news json data results");
+            AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
+            taskException.setError(e);
+            return taskException.getError().getMessage();
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -135,7 +145,7 @@ public class QueryUtils {
      * parsing the given JSON response.
      */
 
-    private static List<Result> extractFeatureFromJson(String resultJson, final INetworkListener listener) {
+    private static AsyncTaskResults extractFeatureFromJson(String resultJson) {
         if (TextUtils.isEmpty(resultJson)) {
             return null;
         }
@@ -208,11 +218,16 @@ public class QueryUtils {
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing JSON results");
-            listener.onError("Problem parsing JSON results");
+//            listener.onError("Problem parsing JSON results");
+            AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
+            taskException.setError(e);
+            return taskException;
 
         }
-        listener.onSuccess(results);
-        return results;
+//        listener.onSuccess(results);
+        AsyncTaskResults<List<Result>> taskResults = new AsyncTaskResults<>();
+        taskResults.setResult(results);
+        return taskResults;
     }
 
     public static String formatDate(String date) {

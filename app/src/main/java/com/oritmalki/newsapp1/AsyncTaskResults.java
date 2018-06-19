@@ -1,6 +1,6 @@
 package com.oritmalki.newsapp1;
 
-public class AsyncTaskResults<T> {
+public class AsyncTaskResults<T>{
     private  T result;
     private  Exception error = null;
 
