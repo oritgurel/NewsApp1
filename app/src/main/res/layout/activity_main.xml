@@ -4,10 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Theme.Design.NoActionBar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutDirection="ltr"
-    style="@style/Theme.Design.NoActionBar">
+    android:layoutDirection="ltr">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -18,23 +18,16 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"/>
 
-            <!--<ImageButton-->
-                <!--android:id="@+id/main_search_button"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-                <!--android:layout_gravity="bottom"-->
-                <!--android:src="@drawable/ic_search_black_24dp"-->
-                <!--/>-->
 
-            <android.support.v7.widget.SearchView
-                android:id="@+id/main_search_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginHorizontal="16dp"
-                app:queryHint="@string/search_view_query_hint"
-                app:defaultQueryHint="@string/search_view_query_hint"
-                />
+        <android.support.v7.widget.SearchView
+            android:id="@+id/main_search_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginHorizontal="16dp"
+            app:defaultQueryHint="@string/search_view_query_hint"
+            app:queryHint="@string/search_view_query_hint"
+            />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -46,13 +39,13 @@
         android:layout_height="match_parent">
 
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/news_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="160dp">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/news_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="160dp">
 
-            </android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView>
 
         <TextView
             android:id="@+id/message"

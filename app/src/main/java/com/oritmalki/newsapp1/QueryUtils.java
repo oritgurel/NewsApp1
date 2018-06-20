@@ -218,13 +218,7 @@ public class QueryUtils {
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing JSON results");
-//            listener.onError("Problem parsing JSON results");
-//            AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
-//            taskException.setError(e);
-//            return taskException;
-
         }
-//        listener.onSuccess(results);
         AsyncTaskResults<List<Result>> taskResults = new AsyncTaskResults<>();
         taskResults.setResult(results);
         return taskResults;
