@@ -55,7 +55,7 @@ public class QueryUtils {
             Log.e(LOG_TAG, "Problem making the Http request.", e);
 //            listener.onError("Problem making the Http request.");
               AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
-              taskException.setError(e);
+              taskException.setError(new Exception(jsonResponse.toString()));
               return taskException;
         }
 
@@ -71,7 +71,6 @@ public class QueryUtils {
             url = new URL(stringUrl);
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Problem with building the URL", e);
-//            listener.onError("Problem with building the URL");
         }
         return url;
     }
@@ -99,9 +98,10 @@ public class QueryUtils {
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
 //                listener.onError("Error response code: " + urlConnection.getResponseCode());
-                AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
-                taskException.setError(new MalformedURLException());
-                return taskException.getError().getMessage();
+//                AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
+//                Exception e = new Exception("Error response code: \" + urlConnection.getResponseCode()");
+//                taskException.setError(e);
+                return jsonResponse;
 
             }
         } catch (IOException e) {
@@ -219,9 +219,9 @@ public class QueryUtils {
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing JSON results");
 //            listener.onError("Problem parsing JSON results");
-            AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
-            taskException.setError(e);
-            return taskException;
+//            AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
+//            taskException.setError(e);
+//            return taskException;
 
         }
 //        listener.onSuccess(results);

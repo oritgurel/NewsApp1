@@ -85,32 +85,38 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<A
     @Override
     public void onLoadFinished(@NonNull Loader<AsyncTaskResults> loader, AsyncTaskResults data) {
 
-        if (data.getError() instanceof Exception) {
-            progressBar.setVisibility(View.GONE);
-            messageTV.setText(data.getError().getLocalizedMessage());
+        progressBar.setVisibility(View.GONE);
 
-        } else if (data.getResult() != null) {
-            List<Result> results = (List<Result>) data.getResult();
+        if (data != null) {
 
-            messageTV.setText(R.string.message_no_stories_available);
+            if (data.getError() != null) {
+                messageTV.setVisibility(View.VISIBLE);
+                messageTV.setText(data.getError().getMessage());
+                return;
 
-            if (results != null && !results.isEmpty()) {
+            } else if (data.getResult() != null) {
+                List<Result> results = (List<Result>) data.getResult();
+
+                if (results.isEmpty()) {
+                    messageTV.setVisibility(View.VISIBLE);
+                    messageTV.setText(R.string.message_no_stories_available);
+                    return;
+                }
+
+                if (results != null && !results.isEmpty()) {
 
 
-                //sort by date:
-                Collections.sort(results);
-                Collections.reverse(results);
-                adapter = new NewsAdapter(results);
-                newsRecyclerview.setAdapter(adapter);
-//            messageTV.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-                newsRecyclerview.setVisibility(View.VISIBLE);
+                    //sort by date:
+                    Collections.sort(results);
+                    Collections.reverse(results);
+                    adapter = new NewsAdapter(results);
+                    newsRecyclerview.setAdapter(adapter);
+
+                    progressBar.setVisibility(View.GONE);
+                    newsRecyclerview.setVisibility(View.VISIBLE);
+                }
             }
-        } else {
-            progressBar.setVisibility(View.GONE);
-            messageTV.setText(R.string.message_no_stories_available);
         }
-
 
     }
 
