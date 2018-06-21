@@ -34,21 +34,6 @@ public class Result implements Comparable<Result> {
 
     private List<Tag> tags = null;
 
-    public Result(String id, String type, String sectionId, String sectionName, String webPublicationDate, String webTitle, String webUrl, String apiUrl, Boolean isHosted, String pillarId, String pillarName, List<Tag> tags) {
-        this.id = id;
-        this.type = type;
-        this.sectionId = sectionId;
-        this.sectionName = sectionName;
-        this.webPublicationDate = webPublicationDate;
-        this.webTitle = webTitle;
-        this.webUrl = webUrl;
-        this.apiUrl = apiUrl;
-        this.isHosted = isHosted;
-        this.pillarId = pillarId;
-        this.pillarName = pillarName;
-        this.tags = tags;
-    }
-
     public Result() {
 
     }
@@ -61,16 +46,8 @@ public class Result implements Comparable<Result> {
         this.tags = tags;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public void setType(String type) {
@@ -117,32 +94,16 @@ public class Result implements Comparable<Result> {
         this.webUrl = webUrl;
     }
 
-    public String getApiUrl() {
-        return apiUrl;
-    }
-
     public void setApiUrl(String apiUrl) {
         this.apiUrl = apiUrl;
-    }
-
-    public Boolean getIsHosted() {
-        return isHosted;
     }
 
     public void setIsHosted(Boolean isHosted) {
         this.isHosted = isHosted;
     }
 
-    public String getPillarId() {
-        return pillarId;
-    }
-
     public void setPillarId(String pillarId) {
         this.pillarId = pillarId;
-    }
-
-    public String getPillarName() {
-        return pillarName;
     }
 
     public void setPillarName(String pillarName) {

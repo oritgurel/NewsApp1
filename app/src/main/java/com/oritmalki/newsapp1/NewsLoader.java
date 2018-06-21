@@ -27,7 +27,6 @@ public class NewsLoader extends AsyncTaskLoader<AsyncTaskResults> {
         asyncTaskResult.setResult(results);
 
         return results;
-//        return results;
 
 
     }

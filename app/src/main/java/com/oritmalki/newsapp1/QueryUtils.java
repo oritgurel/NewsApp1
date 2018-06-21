@@ -97,10 +97,7 @@ public class QueryUtils {
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
-//                listener.onError("Error response code: " + urlConnection.getResponseCode());
-//                AsyncTaskResults<Exception> taskException = new AsyncTaskResults<>();
-//                Exception e = new Exception("Error response code: \" + urlConnection.getResponseCode()");
-//                taskException.setError(e);
+
                 return jsonResponse;
 
             }
@@ -172,26 +169,26 @@ public class QueryUtils {
                 Result result = new Result();
                 JSONObject currentResult = resultArray.getJSONObject(i);
                 String id = currentResult.getString("id");
-                String type = currentResult.getString("type");
-                String sectionId = currentResult.getString("sectionId");
-                String sectionName = currentResult.getString("sectionName");
-                String webPublicationDate = currentResult.getString("webPublicationDate");
-                String webTitle = currentResult.getString("webTitle");
-                String webUrl = currentResult.getString("webUrl");
-                String apiUrl = currentResult.getString("apiUrl");
-                boolean isHosted = currentResult.getBoolean("isHosted");
-                String pillarId = currentResult.getString("pillarId");
-                String pillarName = currentResult.getString("pillarName");
-                JSONArray tags = currentResult.getJSONArray("tags");
+                String type = currentResult.optString("type");
+                String sectionId = currentResult.optString("sectionId");
+                String sectionName = currentResult.optString("sectionName");
+                String webPublicationDate = currentResult.optString("webPublicationDate");
+                String webTitle = currentResult.optString("webTitle");
+                String webUrl = currentResult.optString("webUrl");
+                String apiUrl = currentResult.optString("apiUrl");
+                boolean isHosted = currentResult.optBoolean("isHosted");
+                String pillarId = currentResult.optString("pillarId");
+                String pillarName = currentResult.optString("pillarName");
+                JSONArray tags = currentResult.optJSONArray("tags");
                 if (tags != null && tags.length() != 0) {
                 for (int j=0; j<tags.length();j++) {
-                    JSONObject currentTag = tags.getJSONObject(j);
-                    String authorId = currentTag.getString("id");
-                    String authorType = currentTag.getString("type");
-                    String authorWebTitle = currentTag.getString("webTitle");
-                    String authorUrl = currentTag.getString("webUrl");
-                    String authorApiUrl = currentTag.getString("apiUrl");
-                    String bio = currentTag.getString("bio");
+                    JSONObject currentTag = tags.optJSONObject(j);
+                    String authorId = currentTag.optString("id");
+                    String authorType = currentTag.optString("type");
+                    String authorWebTitle = currentTag.optString("webTitle");
+                    String authorUrl = currentTag.optString("webUrl");
+                    String authorApiUrl = currentTag.optString("apiUrl");
+                    String bio = currentTag.optString("bio");
 
                     tagsList = new ArrayList<>();
                     tagsList.add(new Tag(authorId, authorType, authorWebTitle, authorUrl, authorApiUrl, bio));
