@@ -17,7 +17,7 @@ android {
         }
     }
 
-    buildTypes.each{
+    buildTypes.each {
         it.buildConfigField 'String', 'MY_GUARDIAN_API_KEY', MyGuardianApiKey
 
     }

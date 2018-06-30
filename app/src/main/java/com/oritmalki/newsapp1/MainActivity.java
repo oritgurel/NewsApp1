@@ -1,20 +1,30 @@
 package com.oritmalki.newsapp1;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,7 +34,7 @@ import com.oritmalki.newsapp1.networkapi.Result;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderCallbacks<AsyncTaskResults>, TextWatcher {
+public class MainActivity extends AppCompatActivity implements LoaderCallbacks<AsyncTaskResults>, TextWatcher, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TextView messageTV;
     private static final int NEWS_LOADER_ID = 1;
@@ -33,17 +43,26 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<A
     private static String queryEndpoint;
     private ProgressBar progressBar;
     private android.support.v7.widget.SearchView searchView;
+    private DrawerLayout drawerLayout;
 
-    //TODO handle error messages
+    public static Intent getIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        setupNavDrawer();
+
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
         searchView = findViewById(R.id.main_search_text);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
@@ -70,16 +89,33 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<A
                 return true;
             }
         });
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
 
     @NonNull
     @Override
     public Loader<AsyncTaskResults> onCreateLoader(int id, @Nullable Bundle args) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //default value
+        String fromDate = preferences.getString(getString(R.string.settings_from_date_key), getString(R.string.settings_from_date_default_value)); //all dates
+        String section = preferences.getString(getString(R.string.settings_section_key), getString(R.string.settings_section_default_value)); //all sections
+
+        Uri baseUri = Uri.parse(queryEndpoint);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+//        uriBuilder.appendQueryParameter(getString(R.string.settings_from_date_key), fromDate);
+        uriBuilder.appendQueryParameter(getString(R.string.settings_section_key), section);
+        uriBuilder.appendQueryParameter(getString(R.string.show_references), getString(R.string.all));
+
+
+
         messageTV.setVisibility(View.GONE);
         newsRecyclerview.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        return new NewsLoader(this, queryEndpoint);
+        return new NewsLoader(this, uriBuilder.toString());
     }
 
     @Override
@@ -167,4 +203,64 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<A
 
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if (key.equals(getString(R.string.settings_from_date_key)) || key.equals(getString(R.string.settings_section_key))) {
+            if (adapter != null) {
+                adapter.clearData();
+            }
+            progressBar.setVisibility(View.VISIBLE);
+            getSupportLoaderManager().restartLoader(NEWS_LOADER_ID, null, this);
+
+        }
+
+    }
+
+    private void setupNavDrawer() {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                item.setChecked(true);
+                drawerLayout.closeDrawers();
+
+                switch (item.getItemId()) {
+                    case R.id.nav_menu_main:
+                        startActivity(MainActivity.getIntent(MainActivity.this));
+                        break;
+                    case R.id.nav_menu_settings:
+                        startActivity(SettingsActivity.getIntent(MainActivity.this));
+                        break;
+                }
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == R.id.nav_menu_settings) {
+            startActivity(SettingsActivity.getIntent(this));
+            return true;
+        }
+
+        //alternatively, with drawer layout:
+
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                drawerLayout.openDrawer(GravityCompat.START);
+//        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.nav_drawer_menu, menu);
+        return true;
+    }
 }
