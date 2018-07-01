@@ -27,16 +27,17 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class NewsPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
+
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings_main);
 
-//            Preference fromDate = findPreference(getString(R.string.settings_from_date_key));
-//            bindPreferenceSummaryToValue(fromDate);
+            Preference fromDate = findPreference(getString(R.string.settings_from_date_key));
+            bindPreferenceSummaryToValue(fromDate);
 
-            Preference subject = findPreference(getString(R.string.settings_section_key));
-            bindPreferenceSummaryToValue(subject);
+            Preference section = findPreference(getString(R.string.settings_section_key));
+            bindPreferenceSummaryToValue(section);
 
         }
 
@@ -49,9 +50,9 @@ public class SettingsActivity extends AppCompatActivity {
                 if (prefIndex >= 0) {
                     CharSequence[] labels = listPreference.getEntries();
                     preference.setSummary(labels[prefIndex]);
-                } else {
-                    preference.setSummary(stringValue);
                 }
+            } else {
+                preference.setSummary(stringValue);
             }
             return true;
         }

@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/nav_menu_item_settings">
 
-    <!--<ListPreference-->
-        <!--android:defaultValue="@string/settings_from_date_default_value"-->
-        <!--android:entries="@array/settings_from_date_labels"-->
-        <!--android:entryValues="@array/settings_from_date_values"-->
-        <!--android:key="@string/settings_from_date_key"-->
-        <!--android:title="@string/settings_from_date_key"-->
-        <!--/>-->
+    <PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:title="@string/nav_menu_item_settings">
 
-    <ListPreference
-        android:defaultValue="@string/settings_section_default_value"
-        android:entries="@array/settings_section_labels"
-        android:entryValues="@array/settings_section_values"
-        android:key="@string/settings_section_key"
-        android:title="@string/settings_section_key"
-        />
+        <ListPreference
+            android:defaultValue="@string/settings_section_default_value"
+            android:entries="@array/settings_section_labels"
+            android:entryValues="@array/settings_section_values"
+            android:key="@string/settings_section_key"
+            android:title="@string/settings_section_key"
+            />
 
+    <EditTextPreference
+        android:key="@string/settings_from_date_key"
+        android:title="@string/settings_from_date_key"
+        android:defaultValue="@string/settings_from_date_default_value"
+        android:inputType="date"
+        android:clickable="true"
+        android:selectAllOnFocus="true"
+        android:hint="yyyy-MM-dd"/>
 
-
-
-</PreferenceScreen>
+    </PreferenceScreen>

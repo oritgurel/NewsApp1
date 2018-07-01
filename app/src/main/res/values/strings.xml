@@ -18,15 +18,16 @@
     <string name="settings_section_key" translatable="false">section</string>
 
     <!--defaultValues-->
-    <string name="settings_from_date_default_value" translatable="false"></string>
-    <string name="settings_section_default_value" translatable="false"></string>
+    <string name="settings_from_date_default_value" translatable="false">2014-08-01</string>
+    <string name="settings_section_default_value" translatable="false">@string/settings_section_all_value</string>
 
     <!--settings from-date labels-->
-    <string name="settings_one_year_back">One Year Back</string>
-    <string name="settings_one_month_back">One Month Back</string>
-    <string name="settings_one_week_back">One Week Back</string>
+    <string name="settings_one_year_back_label">One Year Back</string>
+    <string name="settings_one_month_back_label">One Month Back</string>
+    <string name="settings_one_week_back_label">One Week Back</string>
 
     <!--settings section labels -->
+    <string name="settings_section_all_lable">All</string>
     <string name="settings_section_news_lable">News</string>
     <string name="settings_section_music_lable">Music</string>
     <string name="settings_section_tech_lable">Technology</string>
@@ -37,6 +38,7 @@
     <string name="settings_section_sport_lable">Sport</string>
 
     <!--settings section values-->
+    <string name="settings_section_all_value"></string>
     <string name="settings_section_news_value">news</string>
     <string name="settings_section_music_value">music</string>
     <string name="settings_section_tech_value">technology</string>
@@ -47,5 +49,9 @@
     <string name="settings_section_sport_value">sport</string>
     <string name="all">all</string>
     <string name="show_references">show-references</string>
+    <string name="from_date">from date</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

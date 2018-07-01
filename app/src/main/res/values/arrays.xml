@@ -4,9 +4,9 @@
 
 
     <string-array name="settings_from_date_labels">
-        <item>@string/settings_one_year_back</item>
-        <item>@string/settings_one_month_back</item>
-        <item>@string/settings_one_week_back</item>
+        <item>@string/settings_one_year_back_label</item>
+        <item>@string/settings_one_month_back_label</item>
+        <item>@string/settings_one_week_back_label</item>
     </string-array>
     
     <string-array name="settings_from_date_values">
@@ -14,6 +14,7 @@
     </string-array>
 
     <string-array name="settings_section_labels">
+        <item>@string/settings_section_all_lable</item>
         <item>@string/settings_section_news_lable</item>
         <item>@string/settings_section_sport_lable</item>
         <item>@string/settings_section_tech_lable</item>
@@ -25,6 +26,7 @@
     </string-array>
 
     <string-array name="settings_section_values">
+        <item>@string/settings_section_all_value</item>
         <item>@string/settings_section_news_value</item>
         <item>@string/settings_section_sport_value</item>
         <item>@string/settings_section_tech_value</item>
